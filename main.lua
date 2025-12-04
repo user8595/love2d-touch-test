@@ -18,25 +18,25 @@ function love.load()
 
   touchCount, maxTouches = 0, 0
   textInfo = {}
-  table.insert(textInfo, { "press anywhere to show touches", 0, 1})
+  table.insert(textInfo, { "press anywhere to show touches", 0, 1 })
 end
 
 function love.mousepressed(x, y, b, isTouch)
-	if b == 1 and not isTouch then
-		tableClear(textInfo)
-		table.insert(textInfo, {"touchscreen is only supported", 0, 1})
-	end
+  if b == 1 and not isTouch then
+    tableClear(textInfo)
+    table.insert(textInfo, { "touchscreen is only supported", 0, 1 })
+  end
 end
 
 function love.keypressed(k)
   if k == "escape" then
-      tableClear(textInfo)
+    tableClear(textInfo)
     if exitCount == -1 then
       exitCount = 0
       if osGet == "Android" or osGet == "iOS" then
-      	table.insert(textInfo, {"press back to exit", 0, 1})
+        table.insert(textInfo, { "press back to exit", 0, 1 })
       else
-      	table.insert(textInfo, {"press escape to exit", 0, 1})
+        table.insert(textInfo, { "press escape to exit", 0, 1 })
       end
     else
       exitCount = exitCount + 1
@@ -50,22 +50,22 @@ end
 
 function love.update(dt)
   touches = love.touch.getTouches()
-  
+
   if exitCount == 0 then
     exitTime = exitTime + dt
-    elseif exitCount >= 1 then
+  elseif exitCount >= 1 then
     love.event.quit(0)
   end
-  
+
   if exitTime > 2.25 then
     exitCount = -1
     exitTime = 0
-    end
-  
+  end
+
   for i, id in ipairs(touches) do
     local x, y = love.touch.getPosition(id)
     if next(touches) ~= nil then
-      table.insert(trailObj, {x = x, y = y, alpha = 0.15, id = i})
+      table.insert(trailObj, { x = x, y = y, alpha = 0.15, id = i })
     end
     touchCount = i
     if touchCount > maxTouches then
@@ -81,15 +81,15 @@ function love.update(dt)
       table.remove(trailObj, i)
     end
   end
-  
+
   if next(trailObj) == nil then
-      trailCount = 0
+    trailCount = 0
   end
-  
+
   if next(touches) == nil then
     touchCount = 0
-    end
-  
+  end
+
   for i, txt in ipairs(textInfo) do
     txt[2] = txt[2] + dt
     if txt[2] > 2.25 then
@@ -148,11 +148,16 @@ function love.draw()
         fonts[1], 0, 20 + textYOff * (i - 1), love.graphics.getWidth() - 20, "right")
     end
   end
-  
+
   for i, txt in ipairs(textInfo) do
     love.graphics.setColor(1, 1, 1, txt[3])
     love.graphics.printf(txt[1], fonts[1], 0, wHeight - 60 - textYOff * (i - 1), wWidth, "center")
   end
   love.graphics.setColor(1, 1, 1, 0.5)
-  love.graphics.print(touchCount .. " presses (max " .. maxTouches .. ")\n" .. love.timer.getFPS() .. " FPS\n" .. wWidth .. "x" .. wHeight .. "\n" .. trailCount, fonts[1], 20, 20)
+  love.graphics.print(
+    touchCount ..
+    " presses (max " ..
+    maxTouches .. ")\n" .. love.timer.getFPS() .. " FPS\n" .. wWidth .. "x" .. wHeight .. "\n" .. trailCount, fonts[1],
+    20,
+    20)
 end
