@@ -2,9 +2,9 @@ local touches = love.touch.getTouches()
 local wWidth, wHeight = love.graphics.getWidth(), love.graphics.getHeight()
 local circRad = 20 * 1.5
 local textYOff = 0
+local tCCol = { 1, 1, 1, 0.5 }
 local trailObj, trailCount = {}, 0
 local exitCount, exitTime = -1, 0
-
 local next = next
 local osGet = love.system.getOS()
 local tableClear = require("table.clear")
@@ -13,6 +13,8 @@ function love.load()
   if osGet == "Android" or osGet == "iOS" then
     love.window.setMode(720, 1280, { fullscreen = true, resizable = false })
   end
+
+  love.mouse.setVisible(false)
 
   love.graphics.setLineStyle("rough")
   fonts = {
@@ -71,6 +73,18 @@ function love.update(dt)
     love.event.quit(0)
   end
 
+  if touchCount == 0 then
+    tCCol = { 1, 1, 1, 0.5 }
+  else
+    if touchCount % 2 == 0 then
+      tCCol = { 0.5, 0.6, 0.9, 1 }
+    elseif touchCount % 3 == 0 then
+      tCCol = { 0.5, 0.9, 0.7, 1 }
+    else
+      tCCol = { 1, 0.75, 0.5, 1 }
+    end
+  end
+
   if exitTime > 2.25 then
     exitCount = -1
     exitTime = 0
@@ -124,7 +138,7 @@ end
 
 function love.draw()
   love.graphics.setColor(1, 1, 1, 1)
-  for i, trl in ipairs(trailObj) do
+  for _, trl in ipairs(trailObj) do
     if trl.id % 2 == 0 then
       love.graphics.setColor(0.5, 0.6, 0.9, trl.alpha)
     elseif trl.id % 3 == 0 then
@@ -167,11 +181,12 @@ function love.draw()
     love.graphics.setColor(1, 1, 1, txt[3])
     love.graphics.printf(txt[1], fonts[1], 0, wHeight - 60 - textYOff * (i - 1), wWidth, "center")
   end
-  love.graphics.setColor(1, 1, 1, 0.5)
-  love.graphics.print(
-    touchCount ..
-    " presses (max " ..
-    maxTouches .. ")\n" .. love.timer.getFPS() .. " FPS\n" .. wWidth .. "x" .. wHeight .. "\n" .. trailCount, fonts[1],
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.print({ tCCol,
+      touchCount, { 1, 1, 1, 0.5 },
+      " presses (max " ..
+      maxTouches .. ")\n" .. love.timer.getFPS() .. " FPS\n" .. wWidth .. "x" .. wHeight .. "\n" .. trailCount },
+    fonts[1],
     20,
     20)
 end
