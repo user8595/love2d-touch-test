@@ -10,6 +10,10 @@ local osGet = love.system.getOS()
 local tableClear = require("table.clear")
 
 function love.load()
+  if osGet == "Android" or osGet == "iOS" then
+    love.window.setMode(720, 1280, { fullscreen = true, resizable = false })
+  end
+
   love.graphics.setLineStyle("rough")
   fonts = {
     love.graphics.setNewFont("/monogram.ttf", 22)
@@ -30,9 +34,9 @@ end
 
 function love.keypressed(k)
   if k == "escape" then
-    tableClear(textInfo)
     if exitCount == -1 then
       exitCount = 0
+      tableClear(textInfo)
       if osGet == "Android" or osGet == "iOS" then
         table.insert(textInfo, { "press back to exit", 0, 1 })
       else
@@ -40,6 +44,16 @@ function love.keypressed(k)
       end
     else
       exitCount = exitCount + 1
+    end
+  end
+
+  if osGet ~= "Android" or osGet ~= "iOS" then
+    if k == "f11" then
+      if not love.window.getFullscreen() then
+        love.window.setFullscreen(true)
+      else
+        love.window.setFullscreen(false)
+      end
     end
   end
 end
