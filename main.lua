@@ -65,6 +65,7 @@ function love.resize(w, h)
 end
 
 function love.update(dt)
+  wWidth, wHeight = love.graphics.getWidth(), love.graphics.getHeight()
   touches = love.touch.getTouches()
 
   if exitCount == 0 then
