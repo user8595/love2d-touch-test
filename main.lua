@@ -11,7 +11,7 @@ local tableClear = require("table.clear")
 
 function love.load()
   if osGet == "Android" or osGet == "iOS" then
-    love.window.setMode(720, 1280, { fullscreen = true, resizable = false })
+    love.window.setMode(720, 1280, { resizable = false })
   end
 
   love.mouse.setVisible(false)
